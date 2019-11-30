@@ -11,5 +11,5 @@
 
 void Game::Render()
 {
-
+    m_sdl->Render();
 }

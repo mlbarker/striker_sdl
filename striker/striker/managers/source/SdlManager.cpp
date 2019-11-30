@@ -1,393 +1,172 @@
-// SdlManager.cpp
+/* SdlManager.cpp
+*
+* The implementation to handle SDL for use with the game.
+*
+* ImperfectlyCoded © 2019
+*/
 
 #include <iostream>
-#include <SDL.h>
-#include <SDL_image.h>
 #include "SdlManager.h"
 
-SdlManager::SdlManager()
-    : m_textures()
-    , m_backgroundTextures()
-    , m_windowSurface(nullptr)
-    , m_renderer(nullptr)
-    , m_window(nullptr)
-    , m_exit(false)
-    , m_cursor(0)
+bool SdlManager::Initialize(const std::string& windowTitle)
 {
+    if (!InitSdl())
+    {
+        std::cout << "Initialize() failed: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    if (!InitWindow(windowTitle))
+    {
+        std::cout << "Initialize() failed: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    if (!InitDisplay())
+    {
+        std::cout << "Initialize() failed: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    if ((m_surfaceTest = Load("assets/test/Icon_BoxingGlove_128.bmp")) == nullptr)
+    {
+        std::cout << "Initialize() failed: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // SDL initialization was successful
+    return true;
 }
 
-int32_t SdlManager::Initialize(const std::string& windowTitle)
+void SdlManager::ProcessEvents(SDL_Event* event)
 {
-    int32_t result{ 0 };
-
-    result = InitSdl();
-    if (result == EXIT_FAILURE)
+    while (SDL_PollEvent(event))
     {
-        return result;
+        HandleEvents(event);
     }
-
-    result = InitSdlImage();
-    if (result == EXIT_FAILURE)
-    {
-        return result;
-    }
-
-    result = CreateWindow(windowTitle);
-    if (result == EXIT_FAILURE)
-    {
-        return result;
-    }
-
-    result = CreateRenderer();
-    if (result == EXIT_FAILURE)
-    {
-        return result;
-    }
-
-    return EXIT_SUCCESS;
 }
 
-int32_t SdlManager::LoadBackground(const std::string& path)
+void SdlManager::Render()
 {
-    if (m_renderer == nullptr)
-    {
-        return EXIT_FAILURE;
-    }
+    Draw(m_surfaceDisplay, m_surfaceTest, 0, 0);
+    Draw(m_surfaceDisplay, m_surfaceTest, 300, 300, 0, 0, 100, 100);
 
-    SDL_Surface* surface = IMG_Load(path.c_str());
-    if (surface == nullptr)
-    {
-        std::cout << "Image failed to load for texture creation: " << IMG_GetError() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    // create texture from surface pixels
-    SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(m_renderer, surface);
-    if (backgroundTexture == nullptr)
-    {
-        std::cout << "Failed to load texture from surface: " << SDL_GetError() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (backgroundTexture == nullptr)
-    {
-        std::cout << "Failed to load a texture" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    SDL_FreeSurface(surface);
-
-    // store the background
-    m_backgroundTextures.push_back(backgroundTexture);
-
-    return EXIT_SUCCESS;
+    SDL_UpdateWindowSurface(m_window);
 }
 
-int32_t SdlManager::LoadMedia(const std::string& path, bool centered, int32_t offsetX, int32_t offsetY)
+void SdlManager::Shutdown()
 {
-    SDL_Texture* texture = nullptr;
-    if (texture == nullptr)
-    {
-        std::cout << "Failed to load a texture" << std::endl;
-        return EXIT_FAILURE;
-    }
+    SDL_FreeSurface(m_surfaceTest);
+    m_surfaceTest = nullptr;
 
-    m_textures.push_back(texture);
+    SDL_FreeSurface(m_surfaceDisplay);
+    m_surfaceDisplay = nullptr;
 
-    return EXIT_SUCCESS;
-}
-
-int32_t SdlManager::Run()
-{
-    SDL_Event windowEvent;
-    while (!m_exit)
-    {
-        if (SDL_PollEvent(&windowEvent))
-        {
-            if (SDL_QUIT == windowEvent.type)
-            {
-                m_exit = true;
-            }
-
-            else if (SDL_KEYDOWN == windowEvent.type)
-            {
-                ProcessKeyboardInput(windowEvent);
-            }
-        }
-
-        // clear, render, update
-        SDL_RenderClear(m_renderer);
-
-        for (auto texture : m_backgroundTextures)
-        {
-            SDL_RenderCopy(m_renderer, texture, nullptr, nullptr);
-        }
-
-        int32_t scale = 50;
-        SDL_Rect renderRect;
-        for (size_t index = 0; index < m_textures.size(); ++index)
-        {
-            /*if (m_cursor == index && !m_textureRects[index].scaled)
-            {
-                m_textureRects[index].x -= scale;
-                m_textureRects[index].y -= scale;
-                m_textureRects[index].width += scale;
-                m_textureRects[index].height += scale;
-                m_textureRects[index].scaled = true;
-            }
-            else if (m_cursor != index && m_textureRects[index].scaled)
-            {
-                m_textureRects[index].x += scale;
-                m_textureRects[index].y += scale;
-                m_textureRects[index].width -= scale;
-                m_textureRects[index].height -= scale;
-                m_textureRects[index].scaled = false;
-            }
-            
-            renderRect.x = m_textureRects[index].x;
-            renderRect.y = m_textureRects[index].y;
-            renderRect.w = m_textureRects[index].width;
-            renderRect.h = m_textureRects[index].height;*/
-            SDL_RenderCopyEx(m_renderer, m_textures[index], nullptr, &renderRect, 0.0, nullptr, SDL_FLIP_NONE);
-        }
-        SDL_RenderPresent(m_renderer);
-
-        // make sure the background fits the window
-        /*SDL_Rect stretchRect;
-        stretchRect.x = 0;
-        stretchRect.y = 0;
-        stretchRect.w = Constants::WIDTH;
-        stretchRect.h = Constants::HEIGHT;
-        SDL_BlitScaled(m_backgroundSurface, nullptr, m_windowSurface, &stretchRect);
-        SDL_UpdateWindowSurface(m_window);*/
-    }
-
-    return EXIT_SUCCESS;
-}
-
-int32_t SdlManager::Shutdown()
-{
-    // clean up
-    FreeTextures();
-    SDL_FreeSurface(m_windowSurface);
-    m_windowSurface = nullptr;
-
-    // quitting...
-    SDL_DestroyRenderer(m_renderer);
-    SDL_DestroyWindow(m_window);
-    m_renderer = nullptr;
-    m_window = nullptr;
-
-    IMG_Quit();
     SDL_Quit();
-
-    return EXIT_SUCCESS;
 }
 
-int32_t SdlManager::InitSdl()
+bool SdlManager::IsSdlRunning()
 {
-    // startup SDL
+    return m_sdlRunning;
+}
+
+SDL_Surface* SdlManager::Load(const std::string& file)
+{
+    SDL_Surface* surfaceTemp = nullptr;
+    SDL_Surface* surfaceReturn = nullptr;
+
+    if ((surfaceTemp = SDL_LoadBMP(file.c_str())) == nullptr)
+    {
+        std::cout << "Load() failed: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+
+    surfaceReturn = SDL_ConvertSurface(surfaceTemp, m_surfaceDisplay->format, 0);
+    SDL_FreeSurface(surfaceTemp);
+
+    return surfaceReturn;
+}
+
+bool SdlManager::Draw(SDL_Surface* surfaceDestination, SDL_Surface* surfaceSource, int32_t x, int32_t y)
+{
+    if (surfaceDestination == nullptr || surfaceSource == nullptr)
+    {
+        return false;
+    }
+
+    SDL_Rect rectDestination;
+    rectDestination.x = x;
+    rectDestination.y = y;
+
+    SDL_BlitSurface(surfaceSource, nullptr, surfaceDestination, &rectDestination);
+
+    return true;
+}
+
+bool SdlManager::Draw(SDL_Surface* surfaceDestination, SDL_Surface* surfaceSource, int32_t x, int32_t y, int32_t x2, int32_t y2, int32_t w, int32_t h)
+{
+    if (surfaceDestination == nullptr || surfaceSource == nullptr)
+    {
+        return false;
+    }
+
+    SDL_Rect rectDestination;
+    rectDestination.x = x;
+    rectDestination.y = y;
+
+    SDL_Rect rectSource;
+    rectSource.x = x2;
+    rectSource.y = y2;
+    rectSource.w = w;
+    rectSource.h = h;
+
+    SDL_BlitSurface(surfaceSource, &rectSource, surfaceDestination, &rectDestination);
+
+    return true;
+}
+
+bool SdlManager::InitSdl()
+{
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
-        std::cout << "SDL Error: " << SDL_GetError() << std::endl;
-        return EXIT_FAILURE;
+        std::cout << "InitSdl() failed: " << SDL_GetError() << std::endl;
+        return false;
     }
 
-    return EXIT_SUCCESS;
+    return true;
 }
 
-int32_t SdlManager::InitSdlImage()
+bool SdlManager::InitWindow(const std::string& windowTitle)
 {
-    // Init PNG loading
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    if ((m_window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)) == nullptr)
     {
-        std::cout << "Failed to initialize SDL_image: " << IMG_GetError() << std::endl;
-        return EXIT_FAILURE;
+        std::cout << "InitWindow() failed on window creation: " << SDL_GetError() << std::endl;
+        return false;
     }
 
-    return EXIT_SUCCESS;
+    return true;
 }
 
-int32_t SdlManager::CreateWindow(const std::string& title)
+bool SdlManager::InitDisplay()
 {
-    // SDL window creation
-    m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800/*Constants::WIDTH*/, 600/*Constants::HEIGHT*/, SDL_WINDOW_ALLOW_HIGHDPI);
-    if (m_window == nullptr)
+    if ((m_surfaceDisplay = SDL_GetWindowSurface(m_window)) == nullptr)
     {
-        std::cout << "Window Creation Failed: " << SDL_GetError() << std::endl;
-        return EXIT_FAILURE;
+        std::cout << "InitDisplay() failed on retrieving window's surface: " << SDL_GetError() << std::endl;
+        return false;
     }
 
-    // the surface to draw on
-    m_windowSurface = SDL_GetWindowSurface(m_window);
-    return EXIT_SUCCESS;
+    return true;
 }
 
-int32_t SdlManager::CreateRenderer()
+void SdlManager::HandleEvents(SDL_Event* event)
 {
-    // SDL renderer creation
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
-    if (m_renderer == nullptr)
-    {
-        std::cout << "Renderer Creation Failed: " << SDL_GetError() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    // render redraw color
-    SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    return EXIT_SUCCESS;
+    HandleQuitEvent(event);
 }
 
-SDL_Surface* SdlManager::LoadSurface(const std::string& path)
+void SdlManager::HandleQuitEvent(SDL_Event* event)
 {
-    SDL_Surface* surface = nullptr;
-    surface = IMG_Load(path.c_str());
-
-    // failed to load the image
-    if (surface == nullptr)
+    if (event->type == SDL_QUIT)
     {
-        std::cout << "Image failed to load: " << IMG_GetError() << std::endl;
-        return nullptr;
-    }
-
-    return surface;
-}
-
-SDL_Surface* SdlManager::ConvertSurface(SDL_Surface* surface)
-{
-    // optimizing the image surface
-    SDL_Surface* newSurface = nullptr;
-    newSurface = SDL_ConvertSurface(surface, m_windowSurface->format, 0);
-    if (surface == nullptr)
-    {
-        std::cout << "Failed to optimitize surface: " << SDL_GetError() << std::endl;
-        return nullptr;
-    }
-
-    // release the old surface
-    // return the new one
-    SDL_FreeSurface(surface);
-    return newSurface;
-}
-
-void SdlManager::ProcessKeyboardInput(SDL_Event& event)
-{
-    switch (event.key.keysym.sym)
-    {
-    case SDLK_LEFT:
-        if (m_cursor > 0)
-        {
-            UpdateTextureMovement(500);
-            --m_cursor;
-        }
-        break;
-
-    case SDLK_RIGHT:
-        if (m_cursor < m_textures.size() - 1)
-        {
-            UpdateTextureMovement(-500);
-            ++m_cursor;
-        }
-        break;
-
-    default:
-        break;
-    }
-}
-
-//SDL_Texture* SdlManager::LoadTexture(const std::string& path, bool centered, int32_t offsetX, int32_t offsetY)
-//{
-//    if (m_renderer == nullptr)
-//    {
-//        return nullptr;
-//    }
-//
-//    SDL_Surface* surface = IMG_Load(path.c_str());
-//    if (surface == nullptr)
-//    {
-//        std::cout << "Image failed to load for texture creation: " << IMG_GetError() << std::endl;
-//        return nullptr;
-//    }
-//
-//    // create texture from surface pixels
-//    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
-//    if (texture == nullptr)
-//    {
-//        std::cout << "Failed to load texture from surface: " << SDL_GetError() << std::endl;
-//        return nullptr;
-//    }
-//
-//    /*RenderCoords textureCoords;
-//    textureCoords.width = surface->w;
-//    textureCoords.height = surface->h;
-//    
-//    if (centered)
-//    {
-//        textureCoords.x = (Constants::WIDTH >> 1) - (textureCoords.width >> 1);
-//        textureCoords.y = (Constants::HEIGHT >> 1) - (textureCoords.height >> 1);
-//    }*/
-//
-//    // applying the offset
-//    if (offsetX != 0)
-//    {
-//        // such a hack. need to find a better
-//        // way to do this. I have to account
-//        // for the background image.
-//        int32_t textureRectAmount = m_textureRects.size();
-//        if (textureRectAmount > 1)
-//        {
-//            textureCoords.x = m_textureRects[textureRectAmount - 1].x + m_textureRects[textureRectAmount - 1].width + offsetX;
-//        }
-//        else
-//        {
-//            textureCoords.x += (offsetX + textureCoords.width);
-//        }
-//    }
-//    if (offsetY != 0)
-//    {
-//        int32_t textureRectAmount = m_textureRects.size();
-//        if (textureRectAmount > 1)
-//        {
-//            textureCoords.y = m_textureRects[textureRectAmount - 1].y + m_textureRects[textureRectAmount - 1].width + offsetY;
-//        }
-//        else
-//        {
-//            textureCoords.y += (offsetY + textureCoords.height);
-//        }
-//    }
-//
-//    m_textureRects.push_back(textureCoords);
-//
-//    // Release the loaded surface
-//    SDL_FreeSurface(surface);
-//
-//    return texture;
-//}
-
-void SdlManager::FreeTextures()
-{
-    for (size_t index = 0; index < m_textures.size(); ++index)
-    {
-        SDL_DestroyTexture(m_textures[index]);
-        m_textures[index] = nullptr;
-    }
-    m_textures.clear();
-}
-
-void SdlManager::FreeBackgroundTextures()
-{
-    for (size_t index = 0; index < m_backgroundTextures.size(); ++index)
-    {
-        SDL_DestroyTexture(m_backgroundTextures[index]);
-        m_backgroundTextures[index] = nullptr;
-    }
-    m_backgroundTextures.clear();
-}
-
-void SdlManager::UpdateTextureMovement(int32_t moveX)
-{
-    for (size_t index = 0; index < m_textures.size(); ++index)
-    {
-       //m_textureRects[index].x += moveX;
+        m_sdlRunning = false;
     }
 }

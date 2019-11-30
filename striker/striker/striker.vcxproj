@@ -134,11 +134,14 @@
     <ClCompile Include="game\source\Game_Render.cpp" />
     <ClCompile Include="game\source\Game_Shutdown.cpp" />
     <ClCompile Include="game\source\Game_Update.cpp" />
-    <ClCompile Include="SdlManager.cpp" />
+    <ClCompile Include="managers\source\SdlManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\include\Game.h" />
     <ClInclude Include="managers\include\SdlManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\test\Icon_BoxingGlove_128.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -25,9 +25,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SdlManager.cpp">
-      <Filter>managers\source</Filter>
-    </ClCompile>
     <ClCompile Include="game\source\Game.cpp">
       <Filter>game\source</Filter>
     </ClCompile>
@@ -46,6 +43,9 @@
     <ClCompile Include="game\source\Game_Render.cpp">
       <Filter>game\source</Filter>
     </ClCompile>
+    <ClCompile Include="managers\source\SdlManager.cpp">
+      <Filter>managers\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\include\Game.h">
@@ -54,5 +54,10 @@
     <ClInclude Include="managers\include\SdlManager.h">
       <Filter>managers\include</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\test\Icon_BoxingGlove_128.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

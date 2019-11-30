@@ -29,11 +29,34 @@ public:
     // param event  the current event to be processed
     void ProcessEvents(SDL_Event* event);
 
+    void Render();
+
     // Releases all resources allocated
     void Shutdown();
 
     // Returns true if SDL is running, false otherwise
     bool IsSdlRunning();
+
+    SDL_Surface* Load(const std::string& file);
+
+    // Draws the loaded image onto the screen
+    //
+    // param surfaceDestination  the draw target
+    // param surfaceSource  the surfacae to be copied from
+    // param x  the x position to draw
+    // param y  the y position to draw
+    bool Draw(SDL_Surface* surfaceDestination, SDL_Surface* surfaceSource, int32_t x, int32_t y);
+
+    // Draws part of the loaded image onto the screen
+    // param surfaceDestination  the draw target
+    // param surfaceSource  the surfacae to be copied from
+    // param x  the x position to draw
+    // param y  the y position to draw
+    // param x2  the x position start drawing the rect clip
+    // param y2  the y position start drawing the rect clip
+    // param w  the width to draw the rect clip
+    // param h  the height to draw the rect clip
+    bool Draw(SDL_Surface* surfaceDestination, SDL_Surface* surfaceSource, int32_t x, int32_t y, int32_t x2, int32_t y2, int32_t w, int32_t h);
 
 private:
     // Starts up SDL
@@ -57,6 +80,8 @@ private:
 
     // the display surface for the window
     SDL_Surface* m_surfaceDisplay = nullptr;
+
+    SDL_Surface* m_surfaceTest = nullptr;
 
     // determines if SDL is running
     bool m_sdlRunning = true;

@@ -31,7 +31,9 @@ public:
     // processes events from SDL
     //
     // param event  the event to use for polling the event queue
+    // param events  the events to use for polling the event queue
     void Events(SDL_Event* event);
+    void Events(std::vector<SDL_Event*>& events);
 
     // updates all game data based on the polled events
     void Update();
@@ -46,6 +48,9 @@ private:
 
     // the SDL manager
     std::unique_ptr<SdlManager> m_sdl = nullptr;
+
+    // temp SDL event manager
+    std::shared_ptr<EventManager> m_eventManager = nullptr;
 
     // determines if this application is running
     bool m_isRunning = true;

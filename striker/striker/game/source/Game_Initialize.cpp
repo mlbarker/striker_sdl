@@ -13,7 +13,8 @@
 bool Game::Initialize()
 {
     m_sdl = std::make_unique<SdlManager>();
-    m_sdl->Initialize("window");
+    m_eventManager = std::make_shared<EventManager>();
+    m_sdl->Initialize("window", m_eventManager);
 
     return true;
 }

@@ -78,7 +78,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)striker\managers\include;$(SolutionDir)striker\game\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)striker\commands\include;$(SolutionDir)striker\interfaces;$(SolutionDir)striker\managers\include;$(SolutionDir)striker\game\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,10 +134,17 @@
     <ClCompile Include="game\source\Game_Render.cpp" />
     <ClCompile Include="game\source\Game_Shutdown.cpp" />
     <ClCompile Include="game\source\Game_Update.cpp" />
+    <ClCompile Include="managers\source\EventManager.cpp" />
     <ClCompile Include="managers\source\SdlManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="commands\include\WhackCommand.h" />
     <ClInclude Include="game\include\Game.h" />
+    <ClInclude Include="game\include\GameActor.h" />
+    <ClInclude Include="game\include\Striker.h" />
+    <ClInclude Include="managers\include\EventManager.h" />
+    <ClInclude Include="managers\include\ICommand.h" />
+    <ClInclude Include="managers\include\InputHandler.h" />
     <ClInclude Include="managers\include\SdlManager.h" />
   </ItemGroup>
   <ItemGroup>

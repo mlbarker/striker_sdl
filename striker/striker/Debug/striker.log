@@ -1,2 +1,11 @@
-﻿  SdlManager.cpp
+﻿  Game.cpp
+  Game_Events.cpp
+  Game_Initialize.cpp
+  Game_Render.cpp
+  Game_Shutdown.cpp
+  Game_Update.cpp
+  EventManager.cpp
+  SdlManager.cpp
+  Generating Code...
+D:\development\striker_sdl\striker\striker\game\source\Game.cpp(21,15): warning C4101: 'event': unreferenced local variable
   striker.vcxproj -> D:\development\striker_sdl\striker\Debug\striker.exe

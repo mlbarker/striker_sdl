@@ -19,9 +19,11 @@ int32_t Game::Execute()
 
     // the main loop of the game
     SDL_Event event;
+    std::vector<SDL_Event*> events;
     while (m_isRunning)
     {
-        Events(&event);
+        //Events(&event);
+        Events(events);
         Update();
         Render();
     }

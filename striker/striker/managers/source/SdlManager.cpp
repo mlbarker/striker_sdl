@@ -8,7 +8,11 @@
 #include <iostream>
 #include "SdlManager.h"
 
-bool SdlManager::Initialize(const std::string& windowTitle)
+SdlManager::~SdlManager()
+{
+}
+
+bool SdlManager::Initialize(const std::string& windowTitle, std::shared_ptr<EventManager> eventManager)
 {
     if (!InitSdl())
     {
@@ -34,6 +38,12 @@ bool SdlManager::Initialize(const std::string& windowTitle)
         return false;
     }
 
+    if ((m_eventManager = eventManager) == nullptr)
+    {
+        std::cout << "Initialize() failed: EventManager is null" << std::endl;
+        return false;
+    }
+
     // SDL initialization was successful
     return true;
 }
@@ -42,7 +52,19 @@ void SdlManager::ProcessEvents(SDL_Event* event)
 {
     while (SDL_PollEvent(event))
     {
-        HandleEvents(event);
+        m_eventManager->OnEvent(event);
+        //HandleEvents(event);
+    }
+}
+
+void SdlManager::ProcessEvents(std::vector<SDL_Event*>& events)
+{
+    SDL_Event* event = nullptr;
+    while (SDL_PollEvent(event))
+    {
+        events.push_back(event);
+        //m_eventManager->OnEvent(event);
+        //HandleEvents(event);
     }
 }
 
@@ -160,7 +182,8 @@ bool SdlManager::InitDisplay()
 
 void SdlManager::HandleEvents(SDL_Event* event)
 {
-    HandleQuitEvent(event);
+    //HandleQuitEvent(event);
+    m_eventManager->OnEvent(event);
 }
 
 void SdlManager::HandleQuitEvent(SDL_Event* event)

@@ -23,6 +23,18 @@
     <Filter Include="game\source">
       <UniqueIdentifier>{3cecc4f1-4f49-447e-a0d0-f23c66cfbfb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces">
+      <UniqueIdentifier>{dbcd66f9-4fc2-42f6-965a-125481cbf964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands">
+      <UniqueIdentifier>{74a4b810-03f4-4eea-9206-3d981740829b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\include">
+      <UniqueIdentifier>{7101ad9a-4b66-42d2-95a1-b38be4798d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commands\source">
+      <UniqueIdentifier>{c63d4319-dd11-4654-8630-cda361b93a31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\source\Game.cpp">
@@ -46,6 +58,9 @@
     <ClCompile Include="managers\source\SdlManager.cpp">
       <Filter>managers\source</Filter>
     </ClCompile>
+    <ClCompile Include="managers\source\EventManager.cpp">
+      <Filter>managers\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\include\Game.h">
@@ -53,6 +68,24 @@
     </ClInclude>
     <ClInclude Include="managers\include\SdlManager.h">
       <Filter>managers\include</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\include\EventManager.h">
+      <Filter>managers\include</Filter>
+    </ClInclude>
+    <ClInclude Include="game\include\Striker.h">
+      <Filter>game\include</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\include\InputHandler.h">
+      <Filter>managers\include</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\include\ICommand.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="game\include\GameActor.h">
+      <Filter>game\include</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\include\WhackCommand.h">
+      <Filter>commands\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,22 +12,26 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <memory>
+#include "EventManager.h"
 
 class SdlManager
 {
 public:
     SdlManager() {}
-    ~SdlManager() {}
+    ~SdlManager();
 
     // Starts up SDL and creates the window and display
     //
     // param windowTitle  the title text that is displayed on the window
-    bool Initialize(const std::string& windowTitle);
+    // param eventManager  the derived manager to process all overriden events
+    bool Initialize(const std::string& windowTitle, std::shared_ptr<EventManager> eventManager);
 
     // Processes all the events in the event queue
     //
     // param event  the current event to be processed
     void ProcessEvents(SDL_Event* event);
+    void ProcessEvents(std::vector<SDL_Event*>& events);
 
     void Render();
 
@@ -82,6 +86,9 @@ private:
     SDL_Surface* m_surfaceDisplay = nullptr;
 
     SDL_Surface* m_surfaceTest = nullptr;
+
+    // the passed in event manager
+    std::shared_ptr<EventManager> m_eventManager = nullptr;
 
     // determines if SDL is running
     bool m_sdlRunning = true;

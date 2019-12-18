@@ -61,6 +61,18 @@
     <ClCompile Include="managers\source\EventManager.cpp">
       <Filter>managers\source</Filter>
     </ClCompile>
+    <ClCompile Include="managers\source\InputHandler.cpp">
+      <Filter>managers\source</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\source\WhackCommand.cpp">
+      <Filter>commands\source</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\source\NullCommand.cpp">
+      <Filter>commands\source</Filter>
+    </ClCompile>
+    <ClCompile Include="commands\source\ThrowCommand.cpp">
+      <Filter>commands\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\include\Game.h">
@@ -78,13 +90,19 @@
     <ClInclude Include="managers\include\InputHandler.h">
       <Filter>managers\include</Filter>
     </ClInclude>
-    <ClInclude Include="managers\include\ICommand.h">
-      <Filter>interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="game\include\GameActor.h">
       <Filter>game\include</Filter>
     </ClInclude>
     <ClInclude Include="commands\include\WhackCommand.h">
+      <Filter>commands\include</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\ICommand.h">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\include\ThrowCommand.h">
+      <Filter>commands\include</Filter>
+    </ClInclude>
+    <ClInclude Include="commands\include\NullCommand.h">
       <Filter>commands\include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,9 @@
 
 class WhackCommand : public ICommand
 {
-    void Execute();
+public:
+    void Execute(std::shared_ptr<GameActor> actor) override;
+    bool IsNull() override;
 };
 
 #endif // _WHACKCOMMAND_H

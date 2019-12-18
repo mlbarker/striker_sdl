@@ -128,6 +128,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="commands\source\NullCommand.cpp" />
+    <ClCompile Include="commands\source\ThrowCommand.cpp" />
+    <ClCompile Include="commands\source\WhackCommand.cpp" />
     <ClCompile Include="game\source\Game.cpp" />
     <ClCompile Include="game\source\Game_Events.cpp" />
     <ClCompile Include="game\source\Game_Initialize.cpp" />
@@ -135,15 +138,18 @@
     <ClCompile Include="game\source\Game_Shutdown.cpp" />
     <ClCompile Include="game\source\Game_Update.cpp" />
     <ClCompile Include="managers\source\EventManager.cpp" />
+    <ClCompile Include="managers\source\InputHandler.cpp" />
     <ClCompile Include="managers\source\SdlManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="commands\include\NullCommand.h" />
+    <ClInclude Include="commands\include\ThrowCommand.h" />
     <ClInclude Include="commands\include\WhackCommand.h" />
     <ClInclude Include="game\include\Game.h" />
     <ClInclude Include="game\include\GameActor.h" />
     <ClInclude Include="game\include\Striker.h" />
+    <ClInclude Include="interfaces\ICommand.h" />
     <ClInclude Include="managers\include\EventManager.h" />
-    <ClInclude Include="managers\include\ICommand.h" />
     <ClInclude Include="managers\include\InputHandler.h" />
     <ClInclude Include="managers\include\SdlManager.h" />
   </ItemGroup>
